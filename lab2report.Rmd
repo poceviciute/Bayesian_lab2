@@ -1,0 +1,33 @@
+---
+title: "732A91 Lab 2"
+author: "Fanny Karelius (fanka300), Milda Poceviciute (milpo192)"
+date: "16 april 2018"
+output: html_document
+---
+
+#1. Linear and polynomial regression
+
+The data set TempLinkoping contains daily temperatures (in Celsius) at Malmslätt (Linköping) during 2016. The response variable is $temp$ and $time=\frac{\text{number of days since beginning of year}}{366}$ is the covariate. A Bayesian analysis of a quadratic regression $temp=\beta_0+\beta_1\cdot time+\beta_2\cdot time^2+\epsilon$, $\epsilon\overset{iid}{\sim} N(0,\sigma^2)$ is performed.
+
+##a)
+Conjugate priors:
+$$\beta|\sigma^2\sim N(\mu_0, \sigma^2\Omega_0^{-1})\\ \sigma^2\sim Inv-\chi^2(\nu_0,\sigma_0^2)$$
+The hyperparameters were chosen to be $$\mu_0=\\ \nu_0 = \\ \sigma_0^2= \\ \Omega_0=$$
+
+##b)
+
+##c)
+
+##d)
+
+##e)
+
+#2. Posterior approximation for classification with logistic regression
+
+##a)
+
+##b)
+
+#Appendix
+```{r, ref.label=knitr::all_labels(),echo=TRUE,eval=FALSE}
+```
