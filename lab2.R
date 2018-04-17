@@ -109,9 +109,9 @@ glmModel <- glm(Work ~ 0 + ., data = work, family = binomial)
 
 #b)
 
-y <- work$Work
-X <- work[,-work$Work]
-nparam <- ncol(X)
+y_work <- work$Work
+X_work <- work[,-work$Work]
+nparam <- ncol(X_work)
 
 #Prior
 mu <- as.vector(rep(0, nparam))
@@ -132,22 +132,23 @@ logpost_logistic <- function(betas, y, X, mu, sigma2){
 }
 
 betas_init <- as.vector(rep(0,nparam))
-opt_results <- optim(betas_init, logpost_logistic, gr=NULL, y, X, mu, sigma2, method=c("BFGS"),control=list(fnscale=-1), hessian=TRUE)
-#opt_results2 <- optim(betas_init, logpost_logistic, gr=NULL, y, X, mu, sigma2, method=c("CG"),control=list(fnscale=-1), hessian=TRUE)
+opt_results <- optim(betas_init, logpost_logistic, gr=NULL, y_work, X_work, mu, sigma2, method=c("BFGS"),control=list(fnscale=-1), hessian=TRUE)
+#opt_results2 <- optim(betas_init, logpost_logistic, gr=NULL, y_work, X_work, mu, sigma2, method=c("CG"),control=list(fnscale=-1), hessian=TRUE)
 #CG gave smaller value of fn
 beta_tilde <- opt_results$par
 beta_hessian <- -1*opt_results$hessian 
 inv_hessian <- solve(beta_hessian) # Posterior covariance matrix is -inv(Hessian)
 
 sim_beta<-rmvnorm(n=100, mean=beta_tilde, sigma=inv_hessian)
-colnames(sim_beta) <- colnames(X)
+colnames(sim_beta) <- colnames(X_work)
 sim_NSmallChild <- sim_beta[,"NSmallChild"]
-perc = 0.025*length(sim_NSmallChild)
-lower <- sim_NSmallChild[order(sim_NSmallChild, decreasing = FALSE)[perc+1]]
-upper <- sim_NSmallChild[order(sim_NSmallChild, decreasing = FALSE)[length(sim_NSmallChild)-perc-1]]
+perc2 = 0.025*length(sim_NSmallChild)
+lower <- sim_NSmallChild[order(sim_NSmallChild, decreasing = FALSE)[perc2+1]]
+upper <- sim_NSmallChild[order(sim_NSmallChild, decreasing = FALSE)[length(sim_NSmallChild)-perc2-1]]
+
 hist(sim_NSmallChild, freq = FALSE, breaks = 20, col = "grey70", xlab="beta for NSmallChild", main="Histogram of simulated NSmallChild beta")
-lines(c(lower, upper), c(0.1,0.1), col="grey20", lwd=5)
-legend(x = -2.3, y=1, c("95% Equal tail"), col=c("grey20"), lwd = 3)
+lines(c(lower, upper), c(0.1,0.1), col="grey20", lwd=6)
+#legend(x = -0.7, y=1.35, c("95% Equal tail"), col=c("grey20"), lwd = 3)
 
 
 #c)
