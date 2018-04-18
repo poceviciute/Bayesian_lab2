@@ -11,16 +11,16 @@ time <- temps$time
 temps_lm <-lm(temp ~ time + I(time^2))
 
 #hyperparameters
-mu0<-c(-10,90,-80) #based on lm
+mu0<-c(-4,90,-80) #based on lm
 omega0<-diag(3)
 inv_omega0 <- solve(omega0)
 nu0<-5
 sigma20<-9
 
-n1 <- 50
+
 #b)
 library(mvtnorm)
-
+n1 <- 50
 sim_X <- rchisq(n1,nu0)
 sigma2 <- nu0*sigma20/sim_X
 
@@ -46,7 +46,7 @@ for(i in 2:ncol(y)){
 }
 
 #c)
-n<-60
+n<-200
 beta_hat<-solve(t(X)%*%X)%*%t(X)%*%temp #same as found with lm
 mun <- solve(t(X)%*%X+omega0)%*%(t(X)%*%X%*%beta_hat+omega0%*%mu0)
 omegan <-t(X)%*%X+omega0
@@ -96,6 +96,7 @@ lines(time, upp, col="blue")
 # x_tilde_mat <- data.frame(intercept=rep(1,n), x_tilde, x_tilde^2)
 
 x_tilde <- apply(betas_mat,1,function(x){-x[2]/(2*x[3])})
+hist(x_tilde)
 #time where post temp is maximal
 
 #e)
@@ -152,3 +153,15 @@ lines(c(lower, upper), c(0.1,0.1), col="grey20", lwd=6)
 
 
 #c)
+
+log_pred <- function(husband, edu, exper, age, smallchild, bigchild, n){
+  sim_b<-rmvnorm(n=n, mean=beta_tilde, sigma=inv_hessian)
+  x <- c(1, husband, edu, exper, (exper/10)^2, age, smallchild, bigchild)
+  prob_pred <- exp(sim_b%*%x)/(1+exp(sim_b%*%x))
+  u <- runif(n = n)
+  y_pred <- ifelse(prob_pred>u, 1, 0)
+  y_pred
+}
+
+woman <- log_pred(10, 8, 10, 40, 1, 1, 1000)
+hist(woman, freq=FALSE, col = "grey70")
