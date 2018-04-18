@@ -2,7 +2,7 @@
 title: "732A91 Lab 2"
 author: "Fanny Karelius (fanka300), Milda Poceviciute (milpo192)"
 date: "18 april 2018"
-output: html_document
+output: pdf_document
 ---
 
 #1. Linear and polynomial regression
@@ -51,7 +51,8 @@ X <- as.matrix(data.frame(intercept=rep(1, length(time)), time, time^2))
 y <- apply(betas_mat1,1,function(a){X%*%a})
 
 cl <- grey.colors(n1)
-plot(x=time, y=y[,1], col=cl[1], type="l", ylim=c(-15, 25), ylab="Computed temperature", xlab="Time", main="Regression curves")
+plot(x=time, y=y[,1], col=cl[1], type="l", ylim=c(-15, 30), 
+     ylab="Computed temperature", xlab="Time", main="Regression curves")
 for(i in 2:ncol(y)){
  lines(time, y[,i], col=cl[i]) 
 }
@@ -146,7 +147,8 @@ logpost_logistic <- function(betas, y, X, mu, sigma2){
 }
 
 betas_init <- as.vector(rep(0,nparam))
-opt_results <- optim(betas_init, logpost_logistic, gr=NULL, y_work, X_work, mu, sigma2, method=c("BFGS"),control=list(fnscale=-1), hessian=TRUE)
+opt_results <- optim(betas_init, logpost_logistic, gr=NULL, y_work,
+                     X_work, mu, sigma2, method=c("BFGS"),control=list(fnscale=-1), hessian=TRUE)
 
 beta_tilde <- opt_results$par
 beta_hessian <- -1*opt_results$hessian 
@@ -162,7 +164,8 @@ perc2 = 0.025*length(sim_NSmallChild)
 lower <- sim_NSmallChild[order(sim_NSmallChild, decreasing = FALSE)[perc2+1]]
 upper <- sim_NSmallChild[order(sim_NSmallChild, decreasing = FALSE)[length(sim_NSmallChild)-perc2-1]]
 
-hist(sim_NSmallChild, freq = FALSE, breaks = 20, col = "grey70", xlab="beta for NSmallChild", main="Histogram of simulated NSmallChild beta")
+hist(sim_NSmallChild, freq = FALSE, breaks = 20, col = "grey70", 
+     xlab="beta for NSmallChild", main="Histogram of simulated NSmallChild beta")
 lines(c(lower, upper), c(0.1,0.1), col="grey20", lwd=6)
 ```
 
@@ -183,7 +186,8 @@ log_pred <- function(husband, edu, exper, age, smallchild, bigchild, n){
 }
 
 woman <- log_pred(10, 8, 10, 40, 1, 1, 1000)
-hist(woman, freq=FALSE, col = "grey70", xlab="Predictive distribution", main="Histogram of the predicitve distribution")
+hist(woman, freq=FALSE, col = "grey70", xlab="Predictive distribution",
+     main="Histogram of the predicitve distribution")
 ```
 From the predictive distribution we conclude that it is more likely that the woman does not work.
 
